@@ -1,6 +1,7 @@
 defmodule FunboxLinkAggregator.Router do
   use Plug.Router
   use Plug.ErrorHandler
+
   import FunboxLinkAggregator.Models.LinksInfo
 
   plug(:match)
@@ -9,12 +10,12 @@ defmodule FunboxLinkAggregator.Router do
   try do
     post "/visited_links" do
       conn
-      |> send_resp(add(conn.body_params["links"]))
+      |> send_resp(add(conn.params["links"]))
     end
   
     get "/visited_domains" do
       conn
-      |> send_resp(get_uniq_domains_by_timestamp(conn.query_params["from"], conn.query_params["to"]))
+      |> send_resp(get_uniq_domains_by_timestamp(conn.params["from"], conn.params["to"]))
     end
   
     get "/" do

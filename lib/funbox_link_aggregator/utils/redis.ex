@@ -19,4 +19,8 @@ defmodule FunboxLinkAggregator.Utils.Redis do
   def get_range(key, min, max) do
     Redix.command(:redix, ["ZRANGEBYSCORE", key, min, max])
   end
+
+  def delete(key) do
+    Redix.command(:redix, ["DEL", key])
+  end
 end

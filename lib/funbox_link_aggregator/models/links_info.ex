@@ -49,7 +49,7 @@ defmodule FunboxLinkAggregator.Models.LinksInfo do
   defp get_domain(link) do
     domain = Regex.run(domain_pattern(), link)
     if domain do
-      domain |> Enum.at 0
+      domain |> Enum.at(0)
     else
       domain
     end
