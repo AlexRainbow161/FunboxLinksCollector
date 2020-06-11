@@ -1,29 +1,36 @@
 defmodule FunboxLinkAggregator.Router do
   use Plug.Router
+  use Plug.ErrorHandler
   import FunboxLinkAggregator.Models.LinksInfo
 
   plug(:match)
   plug(:dispatch)
 
-  post "/visited_links" do
-    conn
-    |> send_resp(add(conn.body_params["links"]))
+  try do
+    post "/visited_links" do
+      conn
+      |> send_resp(add(conn.body_params["links"]))
+    end
+  
+    get "/visited_domains" do
+      conn
+      |> send_resp(get_uniq_domains_by_timestamp(conn.query_params["from"], conn.query_params["to"]))
+    end
+  
+    get "/" do
+      conn
+      |> put_resp_content_type("application/json")
+      |> send_resp(200, Poison.encode!(ok()))
+    end
+  
+    match _ do
+      send_resp(conn, 404, "Requested page not found!")
+    end
+  rescue
+     e ->
+      IO.inspect e
   end
-
-  get "/visited_domains" do
-    conn
-    |> send_resp(get_uniq_domains_by_timestamp(conn.query_params["from"], conn.query_params["to"]))
-  end
-
-  get "/" do
-    conn
-    |> put_resp_content_type("application/json")
-    |> send_resp(200, Poison.encode!(ok()))
-  end
-
-  match _ do
-    send_resp(conn, 404, "Requested page not found!")
-  end
+  
 
   defp ok(result = %{}) do
     result
@@ -69,5 +76,11 @@ defmodule FunboxLinkAggregator.Router do
     conn
     |> put_resp_content_type("application/json")
     |> send_resp(200, Poison.encode!(ok()))
+  end
+
+  def handle_errors(conn, %{kind: _kind, reason: reason, stack: _stack}) do
+    conn
+    |> put_resp_content_type("application/json")
+    |> send_resp(500, Poison.encode!(error(reason)))
   end
 end

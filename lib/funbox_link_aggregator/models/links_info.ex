@@ -1,10 +1,13 @@
 defmodule FunboxLinkAggregator.Models.LinksInfo do
   import FunboxLinkAggregator.Utils.Redis
   import DateTime
+
   def add(links) when is_list(links) do
     now = to_unix(utc_now())
     Enum.each links, fn link ->
-      add_to_range(key(), get_link_struct_json(link, now) , now)
+      if String.length(link) > 0 do
+        add_to_range(key(), get_link_struct_json(link, now) , now)
+      end
     end
   end
 
@@ -19,9 +22,8 @@ defmodule FunboxLinkAggregator.Models.LinksInfo do
         domains = Enum.map result, fn it ->
           Poison.decode!(it)["link"]
           |> get_domain()
-          |> Enum.at(0)
         end
-        domains = Enum.uniq(domains)
+        domains = Enum.uniq(domains) |> Enum.filter(fn link -> link != :nil end)
         {:ok, %{domains: domains}}
       _ -> {:ok, []}
     end
@@ -45,7 +47,12 @@ defmodule FunboxLinkAggregator.Models.LinksInfo do
   end
 
   defp get_domain(link) do
-    Regex.run(domain_pattern(), link)
+    domain = Regex.run(domain_pattern(), link)
+    if domain do
+      domain |> Enum.at 0
+    else
+      domain
+    end
   end
 
   defp domain_pattern do
