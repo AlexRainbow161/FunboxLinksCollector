@@ -7,29 +7,24 @@ defmodule FunboxLinkAggregator.Router do
   plug(:match)
   plug(:dispatch)
 
-  try do
-    post "/visited_links" do
-      conn
-      |> send_resp(add(conn.params["links"]))
-    end
-  
-    get "/visited_domains" do
-      conn
-      |> send_resp(get_uniq_domains_by_timestamp(conn.params["from"], conn.params["to"]))
-    end
-  
-    get "/" do
-      conn
-      |> put_resp_content_type("application/json")
-      |> send_resp(200, Poison.encode!(ok()))
-    end
-  
-    match _ do
-      send_resp(conn, 404, "Requested page not found!")
-    end
-  rescue
-     e ->
-      IO.inspect e
+  post "/visited_links" do
+    conn
+    |> send_resp(add(conn.params["links"]))
+  end
+
+  get "/visited_domains" do
+    conn
+    |> send_resp(get_uniq_domains_by_timestamp(conn.params["from"], conn.params["to"]))
+  end
+
+  get "/" do
+    conn
+    |> put_resp_content_type("application/json")
+    |> send_resp(200, Poison.encode!(ok()))
+  end
+
+  match _ do
+    send_resp(conn, 404, "Requested page not found!")
   end
   
 
