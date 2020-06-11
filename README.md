@@ -1,4 +1,4 @@
-# FunboxLinkAggregator
+# LinkAggregator
 
 
 ## Requirments
