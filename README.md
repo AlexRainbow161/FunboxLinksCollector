@@ -1,4 +1,4 @@
-# LinkAggregator
+# LinksCollector
 
 
 ## Requirments
