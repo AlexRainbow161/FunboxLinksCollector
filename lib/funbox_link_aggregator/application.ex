@@ -6,10 +6,10 @@ defmodule FunboxLinkAggregator.Application do
   use Application
 
   def start(_type, _args) do
+
     children = [
-      # Starts a worker by calling: FunboxLinkAggregator.Worker.start_link(arg)
-      # {FunboxLinkAggregator.Worker, arg}
-      FunboxLinkAggregator.Endpoint
+      FunboxLinkAggregator.Endpoint,
+      {Redix, name: :redix}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

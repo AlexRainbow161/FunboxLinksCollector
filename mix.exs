@@ -26,7 +26,7 @@ defmodule FunboxLinkAggregator.MixProject do
       {:plug, "~> 1.7"},
       {:cowboy, "~> 2.5"},
       {:plug_cowboy, "~> 2.0"},
-      {:redix, ">= 0.0.0"}
+      {:redix, ">= 0.0.0"}   
     ]
   end
 end
