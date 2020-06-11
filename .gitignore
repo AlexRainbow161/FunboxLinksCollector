@@ -24,3 +24,5 @@ funbox_link_aggregator-*.tar
 
 /.elixir_ls/
 
+/.vscode/
+
